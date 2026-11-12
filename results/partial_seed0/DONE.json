@@ -1,0 +1,11 @@
+{
+  "run_name": "partial_seed0",
+  "condition": "partial",
+  "seed": 0,
+  "max_steps": 150,
+  "learning_rate": 2e-05,
+  "eval_split": "heldout",
+  "final_adapter": "checkpoints/partial_seed0/final_adapter",
+  "train_seconds_last_session": 5166.048745632172,
+  "peak_gpu_memory_mb_last_session": 1998.2705078125
+}

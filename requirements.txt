@@ -1,0 +1,23 @@
+# Зависимости проекта (Python 3.12).
+# PyTorch ставится из индекса cu126: это последняя версия CUDA, которую поддерживает
+# драйвер на машине автора (GTX 1060, драйвер 560.35). Для других GPU можно взять свой индекс.
+# Полный список установленных пакетов с версиями - в requirements-freeze.txt (pip freeze).
+--extra-index-url https://download.pytorch.org/whl/cu126
+
+# Обучение и модель
+torch==2.14.1
+transformers==5.22.2
+trl==1.17.1
+peft==0.21.2
+accelerate==1.15.0
+datasets==5.2.0
+
+# Анализ и визуализация
+numpy
+pandas
+matplotlib
+seaborn
+
+# Ноутбук
+jupyter
+ipykernel

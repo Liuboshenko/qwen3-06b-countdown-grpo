@@ -1,0 +1,11 @@
+{
+  "run_name": "baseline_seed2",
+  "condition": "baseline",
+  "seed": 2,
+  "max_steps": 150,
+  "learning_rate": 2e-05,
+  "eval_split": "heldout",
+  "final_adapter": "checkpoints/baseline_seed2/final_adapter",
+  "train_seconds_last_session": 5138.310475349426,
+  "peak_gpu_memory_mb_last_session": 1998.271484375
+}

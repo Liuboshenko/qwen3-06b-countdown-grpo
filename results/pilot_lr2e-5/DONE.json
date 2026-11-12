@@ -1,0 +1,11 @@
+{
+  "run_name": "pilot_lr2e-5",
+  "condition": "baseline",
+  "seed": 0,
+  "max_steps": 50,
+  "learning_rate": 2e-05,
+  "eval_split": "val",
+  "final_adapter": "checkpoints/pilot_lr2e-5/final_adapter",
+  "train_seconds_last_session": 1040.6623680591583,
+  "peak_gpu_memory_mb_last_session": 1998.271484375
+}

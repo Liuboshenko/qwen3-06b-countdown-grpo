@@ -1,0 +1,17 @@
+{
+  "num_tasks": 300,
+  "accuracy": 0.53,
+  "num_correct": 159,
+  "mean_completion_tokens": 16.51,
+  "status_counts": {
+    "correct": 159,
+    "no_answer": 0,
+    "forbidden_syntax": 0,
+    "parse_error": 0,
+    "wrong_numbers": 15,
+    "division_by_zero": 0,
+    "wrong_value": 126
+  },
+  "step": 50,
+  "eval_seconds": 40.51157307624817
+}
