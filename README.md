@@ -6,6 +6,27 @@
 Небольшая языковая модель дообучается методом GRPO (LoRA-адаптер) решать задачу Countdown с программно проверяемой наградой.
 Исследуется, как устройство награды (строгая или частичная за близость к цели) влияет на обучение и на reward hacking.
 
+## Технический стек
+
+<p align="left">
+  <a href="https://www.python.org"><img src="https://img.shields.io/badge/Python-3.12-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.12" /></a>
+  <a href="https://pytorch.org"><img src="https://img.shields.io/badge/PyTorch-2.14.1-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white" alt="PyTorch 2.14.1" /></a>
+  <a href="https://developer.nvidia.com/cuda-toolkit"><img src="https://img.shields.io/badge/CUDA-12.6-76B900?style=for-the-badge&logo=nvidia&logoColor=white" alt="CUDA 12.6" /></a>
+  <a href="https://huggingface.co/docs/transformers"><img src="https://img.shields.io/badge/Transformers-5.22.2-FFD21E?style=for-the-badge&logo=huggingface&logoColor=white" alt="Transformers 5.22.2" /></a>
+  <a href="https://huggingface.co/docs/trl"><img src="https://img.shields.io/badge/TRL_GRPO-1.17.1-FFD21E?style=for-the-badge&logo=huggingface&logoColor=white" alt="TRL 1.17.1" /></a>
+  <a href="https://huggingface.co/docs/peft"><img src="https://img.shields.io/badge/PEFT_LoRA-0.21.2-FFD21E?style=for-the-badge&logo=huggingface&logoColor=white" alt="PEFT 0.21.2" /></a>
+  <a href="https://huggingface.co/Qwen/Qwen3-0.6B"><img src="https://img.shields.io/badge/Model-Qwen3--0.6B-615CED?style=for-the-badge&logo=huggingface&logoColor=white" alt="Qwen3-0.6B" /></a>
+  <a href="https://huggingface.co/liuboshenko/qwen3-0.6b-countdown-grpo-lora"><img src="https://img.shields.io/badge/Adapters-Hugging_Face-FFD21E?style=for-the-badge&logo=huggingface&logoColor=white" alt="LoRA adapters on Hugging Face" /></a>
+  <a href="https://pandas.pydata.org"><img src="https://img.shields.io/badge/pandas-3.1.1-150458?style=for-the-badge&logo=pandas&logoColor=white" alt="pandas 3.1.1" /></a>
+  <a href="https://numpy.org"><img src="https://img.shields.io/badge/NumPy-2.5.4-013243?style=for-the-badge&logo=numpy&logoColor=white" alt="NumPy 2.5.4" /></a>
+  <a href="https://matplotlib.org"><img src="https://img.shields.io/badge/Matplotlib-3.11.2-11557C?style=for-the-badge" alt="Matplotlib 3.11.2" /></a>
+  <a href="https://jupyter.org"><img src="https://img.shields.io/badge/Jupyter-notebooks-F37626?style=for-the-badge&logo=jupyter&logoColor=white" alt="Jupyter" /></a>
+  <a href="https://www.nvidia.com/en-us/geforce/graphics-cards/geforce-gtx-1060/"><img src="https://img.shields.io/badge/GPU-GTX_1060_6GB-76B900?style=for-the-badge&logo=nvidia&logoColor=white" alt="GPU GTX 1060 6GB" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-3DA639?style=for-the-badge" alt="MIT License" /></a>
+</p>
+
+---
+
 ## Навигация
 
 | Файл | Что внутри |
@@ -95,29 +116,51 @@
 ## Структура репозитория
 
 ```
-countdown_grpo.ipynb      основной отчёт: постановка, данные, награда, графики, таблицы, анализ, выводы
-countdown_tests.ipynb     тесты и проверка LoRA-адаптеров, наглядные таблицы ответов
-HOW_IT_WORKS.MD           как это работает: пайплайн, формулы, как читать логи
-WORKLOG.MD                журнал: замеры ресурсов, пилот, решения, зафиксированная постановка
-src/
-  config.py               все параметры и seed
-  reward.py               проверка ответа и функции награды (baseline и partial)
-  countdown_data.py       генерация задач и сплитов
-  calibrate_difficulty.py подбор сложности по val
-  model_utils.py          загрузка модели, промпт, greedy-генерация
-  evaluate.py             оценка модели на held-out
-  train_grpo.py           обучение GRPO + LoRA с чекпойнтами и продолжением
-  run_experiments.py      очередь запусков (условия x seed)
-  analysis.py             чтение логов и метрики для отчёта
-  benchmark_gpu.py        замеры скорости и памяти GPU
-data/                     train.jsonl, val.jsonl, heldout.jsonl
-results/
-  <условие>_seed<N>/      train_log.jsonl (метрики по шагам), heldout_curve.jsonl, heldout_answers/ (ответы каждые 25 шагов)
-  pilot_lr2e-5/           пилотный запуск (50 шагов, оценка на val)
-  calibration/            точность базы на val для 4 вариантов сложности
-  eval/                   ответы базы до обучения и переоценка сохранённых адаптеров
-requirements.txt          основные зависимости
-requirements-freeze.txt   pip freeze окружения, на котором получены результаты
+qwen3-06b-countdown-grpo/
+├── README.md                      # точка входа: вопрос, результаты, система, воспроизведение
+├── countdown_grpo.ipynb           # основной отчёт: графики, таблицы, ошибки, reward hacking, выводы
+├── countdown_tests.ipynb          # 97 тестов, переоценка LoRA-адаптеров, таблицы ответов моделей
+├── HOW_IT_WORKS.MD                # как это работает: пайплайн, формулы GRPO и KL, чтение логов
+├── WORKLOG.MD                     # журнал: замеры ресурсов, пилот, постановка до запусков
+├── src/
+│   ├── config.py                  # все параметры и seed: данные, модель, LoRA, GRPO, промпт
+│   ├── countdown_data.py          # генерация задач, фильтры, сплиты без пересечений
+│   ├── calibrate_difficulty.py    # подбор сложности по val (база должна решать 10-50%)
+│   ├── reward.py                  # проверка ответа (ast + Fraction), награды baseline и partial
+│   ├── model_utils.py             # загрузка модели и адаптера, промпт, greedy-генерация
+│   ├── evaluate.py                # оценка на held-out, статусы ошибок
+│   ├── train_grpo.py              # GRPO + LoRA, чекпойнты, продолжение после остановки
+│   ├── run_experiments.py         # очередь запусков: условия x seed
+│   ├── analysis.py                # чтение логов, признаки reward hacking
+│   └── benchmark_gpu.py           # замеры скорости и памяти GPU
+├── data/
+│   ├── train.jsonl                # 3985 задач для обучения
+│   ├── val.jsonl                  # 200 задач: калибровка сложности и пилот
+│   └── heldout.jsonl              # 300 задач, зафиксированы до обучения, только итоговая оценка
+├── results/
+│   ├── baseline_seed{0,1,2}/      # строгая награда, 3 запуска
+│   │   ├── train_log.jsonl        # метрики GRPO по шагам: reward, kl, длина ответа, статусы
+│   │   ├── heldout_curve.jsonl    # точность на held-out каждые 25 шагов
+│   │   ├── heldout_answers/       # ответы модели на 300 задач в каждой точке оценки
+│   │   └── DONE.json              # время обучения и пик памяти GPU
+│   ├── partial_seed{0,1,2}/       # частичная награда, та же структура
+│   ├── pilot_lr2e-5/              # пилот: 50 шагов, оценка на val
+│   ├── calibration/               # точность базы на val для 4 вариантов сложности
+│   └── eval/                      # ответы базы до обучения и переоценка адаптеров
+├── requirements.txt               # основные зависимости (torch из индекса cu126)
+├── requirements-freeze.txt        # pip freeze окружения автора
+├── .python-version                # 3.12
+├── .gitignore
+└── LICENSE                        # MIT
+```
+
+Создаются локально и в git не входят:
+
+```
+adapters/        # 6 LoRA-адаптеров с Hugging Face (ноутбук тестов скачивает их сам)
+checkpoints/     # чекпойнты обучения каждые 10 шагов и итоговые адаптеры новых запусков
+logs/            # вывод консоли запусков обучения
+venv3.12/        # виртуальное окружение
 ```
 
 **LoRA-адаптеры** (6 x 40 МБ) в git не входят, они лежат на Hugging Face:
@@ -148,8 +191,8 @@ requirements-freeze.txt   pip freeze окружения, на котором п�
 ### 1. Код и окружение
 
 ```bash
-git clone <URL_РЕПОЗИТОРИЯ>
-cd <имя_папки_репозитория>
+git clone https://github.com/Liuboshenko/qwen3-06b-countdown-grpo.git
+cd qwen3-06b-countdown-grpo
 
 python3.12 -m venv venv3.12
 source venv3.12/bin/activate
